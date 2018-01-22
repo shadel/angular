@@ -1904,7 +1904,18 @@ It is rarely worth the effort to change them at the risk of breaking existing co
 
 
 
-**Consider** using a class instead of an interface.
+**Consider** using a class instead of an interface for services and declarables (components, directives, and pipes).
+
+
+</div>
+
+
+
+<div class="s-rule consider">
+
+
+
+**Consider** using an interface for data models.
 
 
 </div>
@@ -4502,8 +4513,8 @@ helps instantly identify which members of the component serve which purpose.
 
 **Why?** The property associated with `@HostBinding` or the method associated with `@HostListener`
 can be modified only in a single place&mdash;in the directive's class.
-If you use the `host` metadata property, you must modify both the property declaration inside the controller,
-and the metadata associated with the directive.
+If you use the `host` metadata property, you must modify both the property/method declaration in the 
+directive's class and the metadata in the decorator associated with the directive.
 
 
 </div>

@@ -98,6 +98,48 @@ describe('Expression lowering', () => {
       expect(collected.requests.has(collected.annotations[0].start))
           .toBeTruthy('did not find the data field');
     });
+
+    it('should not lower a non-module', () => {
+      const collected = collect(`
+          declare const global: any;
+          const ngDevMode: boolean = (function(global: any) {
+            return global.ngDevMode = true;
+          })(typeof window != 'undefined' && window || typeof self != 'undefined' && self || typeof global != 'undefined' && global);
+       `);
+      expect(collected.requests.size).toBe(0, 'unexpected rewriting');
+    });
+
+    it('should throw a validation exception for invalid files', () => {
+      const cache = new LowerMetadataCache({}, /* strict */ true);
+      const sourceFile = ts.createSourceFile(
+          'foo.ts', `
+        import {Injectable} from '@angular/core';
+
+        class SomeLocalClass {}
+        @Injectable()
+        export class SomeClass {
+          constructor(a: SomeLocalClass) {}
+        }
+      `,
+          ts.ScriptTarget.Latest, true);
+      expect(() => cache.getMetadata(sourceFile)).toThrow();
+    });
+
+    it('should not report validation errors on a .d.ts file', () => {
+      const cache = new LowerMetadataCache({}, /* strict */ true);
+      const dtsFile = ts.createSourceFile(
+          'foo.d.ts', `
+        import {Injectable} from '@angular/core';
+
+        class SomeLocalClass {}
+        @Injectable()
+        export class SomeClass {
+          constructor(a: SomeLocalClass) {}
+        }
+      `,
+          ts.ScriptTarget.Latest, true);
+      expect(() => cache.getMetadata(dtsFile)).not.toThrow();
+    });
   });
 });
 
@@ -149,13 +191,15 @@ function convert(annotatedSource: string) {
       [fileName], {module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017}, host);
   const moduleSourceFile = program.getSourceFile(fileName);
   const transformers: ts.CustomTransformers = {
-    before: [getExpressionLoweringTransformFactory({
-      getRequests(sourceFile: ts.SourceFile): RequestLocationMap{
-        if (sourceFile.fileName == moduleSourceFile.fileName) {
-          return requests;
-        } else {return new Map();}
-      }
-    })]
+    before: [getExpressionLoweringTransformFactory(
+        {
+          getRequests(sourceFile: ts.SourceFile): RequestLocationMap{
+            if (sourceFile.fileName == moduleSourceFile.fileName) {
+              return requests;
+            } else {return new Map();}
+          }
+        },
+        program)]
   };
   let result: string = '';
   const emitResult = program.emit(

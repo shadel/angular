@@ -20,6 +20,7 @@ module.exports = new Package('angular-api', [basePackage, typeScriptPackage])
   .processor(require('./processors/mergeDecoratorDocs'))
   .processor(require('./processors/extractDecoratedClasses'))
   .processor(require('./processors/matchUpDirectiveDecorators'))
+  .processor(require('./processors/addMetadataAliases'))
   .processor(require('./processors/filterContainedDocs'))
   .processor(require('./processors/markBarredODocsAsPrivate'))
   .processor(require('./processors/filterPrivateDocs'))
@@ -37,6 +38,8 @@ module.exports = new Package('angular-api', [basePackage, typeScriptPackage])
     readTypeScriptModules.basePath = API_SOURCE_PATH;
     readTypeScriptModules.ignoreExportsMatching = [/^[_ɵ]|^VERSION$/];
     readTypeScriptModules.hidePrivateMembers = true;
+
+    // NOTE: This list shold be in sync with tools/gulp-tasks/public-api.js
     readTypeScriptModules.sourceFiles = [
       'animations/index.ts',
       'animations/browser/index.ts',
@@ -62,6 +65,7 @@ module.exports = new Package('angular-api', [basePackage, typeScriptPackage])
       'router/index.ts',
       'router/testing/index.ts',
       'router/upgrade/index.ts',
+      'service-worker/index.ts',
       'upgrade/index.ts',
       'upgrade/static/index.ts',
     ];

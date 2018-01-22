@@ -15,7 +15,7 @@ import {map} from 'rxjs/operator/map';
 
 import {HttpHandler} from './backend';
 import {HttpHeaders} from './headers';
-import {HttpParams} from './params';
+import {HttpParams, HttpParamsOptions} from './params';
 import {HttpRequest} from './request';
 import {HttpEvent, HttpResponse} from './response';
 
@@ -352,12 +352,10 @@ export class HttpClient {
 
       // Figure out the headers.
       let headers: HttpHeaders|undefined = undefined;
-      if (!!options.headers !== undefined) {
-        if (options.headers instanceof HttpHeaders) {
-          headers = options.headers;
-        } else {
-          headers = new HttpHeaders(options.headers);
-        }
+      if (options.headers instanceof HttpHeaders) {
+        headers = options.headers;
+      } else {
+        headers = new HttpHeaders(options.headers);
       }
 
       // Sort out parameters.
@@ -366,12 +364,12 @@ export class HttpClient {
         if (options.params instanceof HttpParams) {
           params = options.params;
         } else {
-          params = new HttpParams({fromObject: options.params});
+          params = new HttpParams({ fromObject: options.params } as HttpParamsOptions);
         }
       }
 
       // Construct the request.
-      req = new HttpRequest(first, url !, options.body || null, {
+      req = new HttpRequest(first, url !, (options.body !== undefined ? options.body : null), {
         headers,
         params,
         reportProgress: options.reportProgress,

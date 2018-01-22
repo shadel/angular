@@ -34,7 +34,8 @@ You'll learn the details in the pages that follow. For now, focus on the big pic
 Angular apps are modular and Angular has its own modularity system called _NgModules_.
 
 NgModules are a big deal.
-This page introduces modules; the [NgModules](guide/ngmodule) page covers them in depth.
+This page introduces modules; the [NgModules](guide/ngmodules) pages 
+relating to NgModules covers them in detail.
 
 <br class="clear">
 
@@ -78,7 +79,7 @@ Here's a simple root module:
 
 <div class="l-sub-section">
 
-  The `export` of `AppComponent` is just to show how to export; it isn't actually necessary in this example. A root module has no reason to _export_ anything because other components don't need to _import_ the root module.
+  The `export` of `AppComponent` is just to show how to use the `exports` array to export a component; it isn't actually necessary in this example. A root module has no reason to _export_ anything because other components don't need to _import_ the root module.
 
 </div>
 
@@ -139,7 +140,7 @@ Hang in there. The confusion yields to clarity with time and experience.
 
 <div class="l-sub-section">
 
-  Learn more from the [NgModules](guide/ngmodule) page.
+  Learn more from the [NgModules](guide/ngmodules) page.
 
 </div>
 

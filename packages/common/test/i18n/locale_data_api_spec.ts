@@ -6,20 +6,24 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import localeCaESVALENCIA from '../../locales/ca-ES-VALENCIA';
-import localeEn from '../../locales/en';
-import localeFr from '../../locales/fr';
-import localeFrCA from '../../locales/fr-CA';
-import {findLocaleData} from '../../src/i18n/locale_data_api';
+import localeCaESVALENCIA from '@angular/common/locales/ca-ES-VALENCIA';
+import localeEn from '@angular/common/locales/en';
+import localeFr from '@angular/common/locales/fr';
+import localeZh from '@angular/common/locales/zh';
+import localeFrCA from '@angular/common/locales/fr-CA';
 import {registerLocaleData} from '../../src/i18n/locale_data';
+import {findLocaleData, getCurrencySymbol, getLocaleDateFormat, FormatWidth} from '../../src/i18n/locale_data_api';
 
-export function main() {
+{
   describe('locale data api', () => {
     beforeAll(() => {
       registerLocaleData(localeCaESVALENCIA);
       registerLocaleData(localeEn);
       registerLocaleData(localeFr);
       registerLocaleData(localeFrCA);
+      registerLocaleData(localeFr, 'fake-id');
+      registerLocaleData(localeFrCA, 'fake_Id2');
+      registerLocaleData(localeZh);
     });
 
     describe('findLocaleData', () => {
@@ -42,6 +46,30 @@ export function main() {
         expect(findLocaleData('ca-ES-VALENCIA')).toEqual(localeCaESVALENCIA);
         expect(findLocaleData('CA_es_Valencia')).toEqual(localeCaESVALENCIA);
       });
+
+      it(`should find the LOCALE_DATA if the locale id was registered`, () => {
+        expect(findLocaleData('fake-id')).toEqual(localeFr);
+        expect(findLocaleData('fake_iD')).toEqual(localeFr);
+        expect(findLocaleData('fake-id2')).toEqual(localeFrCA);
+      });
+    });
+
+    describe('getCurrencySymbolElseCode', () => {
+      it('should return the correct symbol', () => {
+        expect(getCurrencySymbol('USD', 'wide')).toEqual('$');
+        expect(getCurrencySymbol('USD', 'narrow')).toEqual('$');
+        expect(getCurrencySymbol('AUD', 'wide')).toEqual('A$');
+        expect(getCurrencySymbol('AUD', 'narrow')).toEqual('$');
+        expect(getCurrencySymbol('CRC', 'wide')).toEqual('CRC');
+        expect(getCurrencySymbol('CRC', 'narrow')).toEqual('₡');
+        expect(getCurrencySymbol('FAKE', 'wide')).toEqual('FAKE');
+        expect(getCurrencySymbol('FAKE', 'narrow')).toEqual('FAKE');
+      });
+    });
+
+    describe('getLastDefinedValue', () => {
+      it('should find the last defined date format when format not defined',
+         () => { expect(getLocaleDateFormat('zh', FormatWidth.Long)).toEqual('y年M月d日'); });
     });
   });
 }

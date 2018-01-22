@@ -9,6 +9,12 @@
 // THIS CODE IS GENERATED - DO NOT MODIFY
 // See angular/tools/gulp-tasks/cldr/extract.js
 
+function plural(n: number): number {
+  let i = Math.floor(Math.abs(n)), v = n.toString().replace(/^[^.]*\.?/, '').length;
+  if (i === 1 && v === 0) return 1;
+  return 5;
+}
+
 export default [
   'en-IN',
   [
@@ -34,7 +40,7 @@ export default [
     ]
   ],
   , [['B', 'A'], ['BC', 'AD'], ['Before Christ', 'Anno Domini']], 0, [0, 0],
-  ['dd/MM/yy', 'dd-MMM-y', 'd MMMM y', 'EEEE d MMMM y'],
+  ['dd/MM/yy', 'dd-MMM-y', 'd MMMM y', 'EEEE, d MMMM, y'],
   ['h:mm a', 'h:mm:ss a', 'h:mm:ss a z', 'h:mm:ss a zzzz'],
   [
     '{1}, {0}',
@@ -42,11 +48,5 @@ export default [
     '{1} \'at\' {0}',
   ],
   ['.', ',', ';', '%', '+', '-', 'E', '×', '‰', '∞', 'NaN', ':'],
-  ['#,##,##0.###', '#,##,##0%', '¤ #,##,##0.00', '#E0'], '₹', 'Indian Rupee',
-  function(n: number):
-      number {
-        let i = Math.floor(Math.abs(n)), v = n.toString().replace(/^[^.]*\.?/, '').length;
-        if (i === 1 && v === 0) return 1;
-        return 5;
-      }
+  ['#,##,##0.###', '#,##,##0%', '¤ #,##,##0.00', '#E0'], '₹', 'Indian Rupee', plural
 ];

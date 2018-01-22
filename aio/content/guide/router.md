@@ -1274,7 +1274,7 @@ The **Routing Module** has several characteristics:
 * Separates routing concerns from other application concerns.
 * Provides a module to replace or remove when testing the application.
 * Provides a well-known location for routing service providers including guards and resolvers.
-* Does **not** [declare components](guide/ngmodule-faq#routing-module).
+* Does **not** declare components.
 
 
 {@a routing-refactor}
@@ -3492,7 +3492,7 @@ It will be there when the `CrisisDetailComponent` ask for it.
 
 
 
-**Two critical points**
+**Three critical points**
 
 1. The router's `Resolve` interface is optional.
 The `CrisisDetailResolver` doesn't inherit from a base class.

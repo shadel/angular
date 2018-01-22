@@ -9,6 +9,11 @@
 // THIS CODE IS GENERATED - DO NOT MODIFY
 // See angular/tools/gulp-tasks/cldr/extract.js
 
+function plural(n: number): number {
+  if (n === 1) return 1;
+  return 5;
+}
+
 export default [
   'es-CO',
   [
@@ -27,7 +32,7 @@ export default [
     ['DO', 'LU', 'MA', 'MI', 'JU', 'VI', 'SA']
   ],
   [
-    ['e', 'f', 'm', 'a', 'm', 'j', 'j', 'a', 's', 'o', 'n', 'd'],
+    ['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
     [
       'ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.'
     ],
@@ -56,9 +61,5 @@ export default [
     ,
   ],
   [',', '.', ';', '%', '+', '-', 'E', '×', '‰', '∞', 'NaN', ':'],
-  ['#,##0.###', '#,##0%', '¤ #,##0.00', '#E0'], '$', 'peso colombiano', function(n: number):
-                                                                            number {
-                                                                              if (n === 1) return 1;
-                                                                              return 5;
-                                                                            }
+  ['#,##0.###', '#,##0 %', '¤ #,##0.00', '#E0'], '$', 'peso colombiano', plural
 ];

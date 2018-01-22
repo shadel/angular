@@ -182,7 +182,6 @@ export declare class Compiler {
     compileModuleAndAllComponentsSync<T>(moduleType: Type<T>): ModuleWithComponentFactories<T>;
     compileModuleAsync<T>(moduleType: Type<T>): Promise<NgModuleFactory<T>>;
     compileModuleSync<T>(moduleType: Type<T>): NgModuleFactory<T>;
-    /** @deprecated */ getNgContentSelectors(component: Type<any>): string[];
 }
 
 /** @experimental */
@@ -363,9 +362,9 @@ export interface DoCheck {
 }
 
 /** @stable */
-export declare class ElementRef {
-    /** @stable */ nativeElement: any;
-    constructor(nativeElement: any);
+export declare class ElementRef<T = any> {
+    /** @stable */ nativeElement: T;
+    constructor(nativeElement: T);
 }
 
 /** @experimental */
@@ -477,7 +476,12 @@ export declare abstract class Injector {
     /** @deprecated */ abstract get(token: any, notFoundValue?: any): any;
     static NULL: Injector;
     static THROW_IF_NOT_FOUND: Object;
-    static create(providers: StaticProvider[], parent?: Injector): Injector;
+    /** @deprecated */ static create(providers: StaticProvider[], parent?: Injector): Injector;
+    static create(options: {
+        providers: StaticProvider[];
+        parent?: Injector;
+        name?: string;
+    }): Injector;
 }
 
 /** @stable */
@@ -1089,8 +1093,10 @@ export declare abstract class ViewRef extends ChangeDetectorRef {
 
 /** @stable */
 export declare class WrappedValue {
-    wrapped: any;
-    constructor(wrapped: any);
+    /** @deprecated */ wrapped: any;
+    constructor(value: any);
+    static isWrapped(value: any): value is WrappedValue;
+    static unwrap(value: any): any;
     static wrap(value: any): WrappedValue;
 }
 

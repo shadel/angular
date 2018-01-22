@@ -32,7 +32,7 @@ if [[ ${CI_MODE:-} == "aio" ]]; then
        ([[ $TRAVIS_BRANCH == "master" ]] || [[ $TRAVIS_BRANCH == $STABLE_BRANCH ]]) &&
        [[ $TRAVIS_PULL_REQUEST != "false" ]]; then
       travisFoldStart "deploy.aio.pr-preview"
-        yarn deploy-preview -- --skip-build
+        yarn deploy-preview --skip-build
       travisFoldEnd "deploy.aio.pr-preview"
     fi
   )
@@ -41,12 +41,12 @@ if [[ ${CI_MODE:-} == "aio" ]]; then
 fi
 
 # Build the Angular packages then exit (no further build required)
-if [[ ${CI_MODE:-} == "aio_e2e" ]]; then
-  travisFoldStart "build.aio_e2e"
+if [[ ${CI_MODE:-} == "aio_e2e" || ${CI_MODE:-} == "aio_tools_test" ]]; then
+  travisFoldStart "build.$CI_MODE"
   (
     ./build.sh
   )
-  travisFoldEnd "build.aio_e2e"
+  travisFoldEnd "build.$CI_MODE"
   exit 0;
 fi
 
@@ -58,7 +58,7 @@ travisFoldEnd "tsc tools"
 
 
 travisFoldStart "tsc all"
-  $(npm bin)/tsc -p packages
   node dist/tools/@angular/compiler-cli/src/main -p packages/tsconfig-metadata.json
+  $(npm bin)/tsc -p packages
   $(npm bin)/tsc -p modules
 travisFoldEnd "tsc all"

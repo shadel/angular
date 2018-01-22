@@ -12,7 +12,7 @@ import {DowngradeComponentAdapter, groupNodesBySelector} from '@angular/upgrade/
 
 import {nodes} from './test_helpers';
 
-export function main() {
+{
   describe('DowngradeComponentAdapter', () => {
     describe('groupNodesBySelector', () => {
       it('should return an array of node collections for each selector', () => {
@@ -122,7 +122,7 @@ export function main() {
         let $compile = undefined as any;
         let $parse = undefined as any;
         let componentFactory: ComponentFactory<any>;  // testbed
-        let wrapCallback = undefined as any;
+        let wrapCallback = (cb: any) => cb;
 
         content = `
           <h1> new component </h1>
@@ -183,7 +183,7 @@ export function main() {
         expect(registry.getAllTestabilities().length).toEqual(0);
         adapter.createComponent([]);
         expect(registry.getAllTestabilities().length).toEqual(1);
-        adapter.registerCleanup(true);
+        adapter.registerCleanup();
         element.remove !();
         expect(registry.getAllTestabilities().length).toEqual(0);
       });

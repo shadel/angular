@@ -8,7 +8,7 @@
 
 import {Inject, LOCALE_ID, Pipe, PipeTransform} from '@angular/core';
 import {formatNumber} from '../i18n/format_number';
-import {NumberFormatStyle, findCurrencySymbol, getLocaleCurrencyName, getLocaleCurrencySymbol} from '../i18n/locale_data_api';
+import {NumberFormatStyle, getCurrencySymbol, getLocaleCurrencyName, getLocaleCurrencySymbol} from '../i18n/locale_data_api';
 import {invalidPipeArgumentError} from './invalid_pipe_argument_error';
 
 /**
@@ -49,7 +49,7 @@ export class DecimalPipe implements PipeTransform {
     const {str, error} = formatNumber(value, locale, NumberFormatStyle.Decimal, digits);
 
     if (error) {
-      throw invalidPipeArgumentError(CurrencyPipe, error);
+      throw invalidPipeArgumentError(DecimalPipe, error);
     }
 
     return str;
@@ -87,7 +87,7 @@ export class PercentPipe implements PipeTransform {
     const {str, error} = formatNumber(value, locale, NumberFormatStyle.Percent, digits);
 
     if (error) {
-      throw invalidPipeArgumentError(CurrencyPipe, error);
+      throw invalidPipeArgumentError(PercentPipe, error);
     }
 
     return str;
@@ -105,11 +105,11 @@ export class PercentPipe implements PipeTransform {
  * - `currencyCode` is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, such
  *    as `USD` for the US dollar and `EUR` for the euro.
  * - `display` indicates whether to show the currency symbol or the code.
- *   - `code`(default): use code (e.g. `USD`).
- *   - `symbol`: use symbol (e.g. `$`).
+ *   - `code`: use code (e.g. `USD`).
+ *   - `symbol`(default): use symbol (e.g. `$`).
  *   - `symbol-narrow`: some countries have two symbols for their currency, one regular and one
- *   - boolean (deprecated from v5): `true` for symbol and false for `code`
  *   narrow (e.g. the canadian dollar CAD has the symbol `CA$` and the symbol-narrow `$`).
+ *   - boolean (deprecated from v5): `true` for symbol and false for `code`
  *   If there is no narrow symbol for the chosen currency, the regular symbol will be used.
  * - `digitInfo` See {@link DecimalPipe} for detailed description.
  *  - `locale` is a `string` defining the locale to use (uses the current {@link LOCALE_ID} by
@@ -143,7 +143,7 @@ export class CurrencyPipe implements PipeTransform {
 
     let currency = currencyCode || 'USD';
     if (display !== 'code') {
-      currency = findCurrencySymbol(currency, display === 'symbol' ? 'wide' : 'narrow');
+      currency = getCurrencySymbol(currency, display === 'symbol' ? 'wide' : 'narrow');
     }
 
     const {str, error} = formatNumber(value, locale, NumberFormatStyle.Currency, digits, currency);

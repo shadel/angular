@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Component, DebugElement, ElementRef } from '@angular/core';
+import { Component, DebugElement } from '@angular/core';
 import { Location } from '@angular/common';
 
 import { LiveExampleComponent, EmbeddedPlunkerComponent } from './live-example.component';
@@ -13,7 +13,7 @@ describe('LiveExampleComponent', () => {
   let liveExampleComponent: LiveExampleComponent;
   let fixture: ComponentFixture<HostComponent>;
   let testPath: string;
-  let liveExampleContent: string;
+  let liveExampleContent: string|null;
 
   //////// test helpers ////////
 
@@ -66,12 +66,11 @@ describe('LiveExampleComponent', () => {
     .overrideComponent(EmbeddedPlunkerComponent, {set: {template: 'NO IFRAME'}});
 
     testPath = defaultTestPath;
-    liveExampleContent = undefined;
+    liveExampleContent = null;
   });
 
   describe('when not embedded', () => {
     function getLiveExampleAnchor() { return getAnchors()[0]; }
-    function getDownloadAnchor() { return getAnchors()[1]; }
 
     it('should create LiveExampleComponent', () => {
       testComponent(() => {

@@ -12,7 +12,7 @@ import {PRESERVE_WS_ATTR_NAME, removeWhitespaces} from '../../src/ml_parser/html
 
 import {humanizeDom} from './ast_spec_utils';
 
-export function main() {
+{
   describe('removeWhitespaces', () => {
 
     function parseAndRemoveWS(template: string): any[] {
@@ -62,6 +62,16 @@ export function main() {
     it('should replace multiple whitespaces with one space', () => {
       expect(parseAndRemoveWS('\n\n\nfoo\t\t\t')).toEqual([[html.Text, ' foo ', 0]]);
       expect(parseAndRemoveWS('   \n foo  \t ')).toEqual([[html.Text, ' foo ', 0]]);
+    });
+
+    it('should not replace &nbsp;', () => {
+      expect(parseAndRemoveWS('&nbsp;')).toEqual([[html.Text, '\u00a0', 0]]);
+    });
+
+    it('should not replace sequences of &nbsp;', () => {
+      expect(parseAndRemoveWS('&nbsp;&nbsp;foo&nbsp;&nbsp;')).toEqual([
+        [html.Text, '\u00a0\u00a0foo\u00a0\u00a0', 0]
+      ]);
     });
 
     it('should not replace single tab and newline with spaces', () => {

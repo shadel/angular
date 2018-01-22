@@ -6,18 +6,20 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import localeEn from '../../locales/en';
-import localeEsUS from '../../locales/es-US';
-import localeFr from '../../locales/fr';
+import localeEn from '@angular/common/locales/en';
+import localeEsUS from '@angular/common/locales/es-US';
+import localeFr from '@angular/common/locales/fr';
+import localeAr from '@angular/common/locales/ar';
 import {registerLocaleData, CurrencyPipe, DecimalPipe, PercentPipe} from '@angular/common';
 import {beforeEach, describe, expect, it} from '@angular/core/testing/src/testing_internal';
 
-export function main() {
+{
   describe('Number pipes', () => {
     beforeAll(() => {
       registerLocaleData(localeEn);
       registerLocaleData(localeEsUS);
       registerLocaleData(localeFr);
+      registerLocaleData(localeAr);
     });
 
     function isNumeric(value: any): boolean { return !isNaN(value - parseFloat(value)); }
@@ -48,8 +50,11 @@ export function main() {
         });
 
         it('should not support other objects', () => {
-          expect(() => pipe.transform({})).toThrowError();
-          expect(() => pipe.transform('123abc')).toThrowError();
+          expect(() => pipe.transform({}))
+              .toThrowError(
+                  `InvalidPipeArgument: '[object Object] is not a number' for pipe 'DecimalPipe'`);
+          expect(() => pipe.transform('123abc'))
+              .toThrowError(`InvalidPipeArgument: '123abc is not a number' for pipe 'DecimalPipe'`);
         });
 
         it('should throw if minFractionDigits is explicitly higher than maxFractionDigits', () => {
@@ -76,10 +81,30 @@ export function main() {
           expect(pipe.transform(1.2, '.2')).toEqual('120.00%');
           expect(pipe.transform(1.2, '4.2')).toEqual('0,120.00%');
           expect(pipe.transform(1.2, '4.2', 'fr')).toEqual('0 120,00 %');
+          expect(pipe.transform(1.2, '4.2', 'ar')).toEqual('0,120.00‎%‎');
+          // see issue #20136
+          expect(pipe.transform(0.12345674, '0.0-10')).toEqual('12.345674%');
+          expect(pipe.transform(0, '0.0-10')).toEqual('0%');
+          expect(pipe.transform(0.00, '0.0-10')).toEqual('0%');
+          expect(pipe.transform(1, '0.0-10')).toEqual('100%');
+          expect(pipe.transform(0.1, '0.0-10')).toEqual('10%');
+          expect(pipe.transform(0.12, '0.0-10')).toEqual('12%');
+          expect(pipe.transform(0.123, '0.0-10')).toEqual('12.3%');
+          expect(pipe.transform(12.3456, '0.0-10')).toEqual('1,234.56%');
+          expect(pipe.transform(12.345600, '0.0-10')).toEqual('1,234.56%');
+          expect(pipe.transform(12.345699999, '0.0-6')).toEqual('1,234.57%');
+          expect(pipe.transform(12.345699999, '0.4-6')).toEqual('1,234.5700%');
+          expect(pipe.transform(100, '0.4-6')).toEqual('10,000.0000%');
+          expect(pipe.transform(100, '0.0-10')).toEqual('10,000%');
+          expect(pipe.transform(1.5e2)).toEqual('15,000%');
+          expect(pipe.transform(1e100)).toEqual('1E+102%');
         });
 
-        it('should not support other objects',
-           () => { expect(() => pipe.transform({})).toThrowError(); });
+        it('should not support other objects', () => {
+          expect(() => pipe.transform({}))
+              .toThrowError(
+                  `InvalidPipeArgument: '[object Object] is not a number' for pipe 'PercentPipe'`);
+        });
       });
     });
 
@@ -100,10 +125,14 @@ export function main() {
           expect(pipe.transform(5.1234, 'CAD', 'symbol-narrow', '5.2-2')).toEqual('$00,005.12');
           expect(pipe.transform(5.1234, 'CAD', 'symbol-narrow', '5.2-2', 'fr'))
               .toEqual('00 005,12 $');
+          expect(pipe.transform(5.1234, 'FAKE', 'symbol')).toEqual('FAKE5.12');
         });
 
-        it('should not support other objects',
-           () => { expect(() => pipe.transform({})).toThrowError(); });
+        it('should not support other objects', () => {
+          expect(() => pipe.transform({}))
+              .toThrowError(
+                  `InvalidPipeArgument: '[object Object] is not a number' for pipe 'CurrencyPipe'`);
+        });
 
         it('should warn if you are using the v4 signature', () => {
           const warnSpy = spyOn(console, 'warn');
